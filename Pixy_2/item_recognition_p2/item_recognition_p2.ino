@@ -1,29 +1,12 @@
-//
-// begin license header
-//
-// This file is part of Pixy CMUcam5 or "Pixy" for short
-//
-// All Pixy source code is provided under the terms of the
-// GNU General Public License v2 (http://www.gnu.org/licenses/gpl-2.0.html).
-// Those wishing to use Pixy source code, software and/or
-// technologies under different licensing terms should contact us at
-// cmucam@cs.cmu.edu. Such licensing terms are available for
-// all portions of the Pixy codebase presented here.
-//
-// end license header
-//
-// This sketch is a good place to start if you're just getting started with 
-// Pixy and Arduino.  This program simply prints the detected object blocks 
-// (including color codes) through the serial console.  It uses the Arduino's 
-// ICSP SPI port.  For more information go here:
-//
-// https://docs.pixycam.com/wiki/doku.php?id=wiki:v2:hooking_up_pixy_to_a_microcontroller_-28like_an_arduino-29
-//
-  
+// pixy 2 demo program
+// modified from hello_world pixy provided program.
+
 #include <Pixy2.h>
 
 // This is the main Pixy object 
 Pixy2 pixy;
+
+
 
 void setup()
 {
@@ -31,9 +14,13 @@ void setup()
   Serial.print("Starting...\n");
   
   pixy.init();
+  //set lamp to max for best item detection
   pixy.setLamp(255, 255);
   
 }
+
+//NOTE:
+// Object should be 3.5 cm away from object measures from dimaeter to pixy (not the camera, but to the board itself)
 
 void loop()
 { 
@@ -44,11 +31,14 @@ void loop()
   // If there are detected blocks, print them
   if (pixy.ccc.numBlocks)
   { 
-    // if the area of the block is above a certain threshold, print the information about it(sig and age)
+    // if the area of the block is above a certain threshold, print the color of the item. 
     uint16_t area = pixy.ccc.blocks[0].area();
-    if(area > 50000)
+    if(area > 40000)
+      // first item in pixy.ccc.blocks (always has the most area out of the blocks found)
+      // printInfo is a modification to the pixy2 library. It checks the signature (1-3.
+      // each of which is pre-defined as a certain golf ball color) and then prints which
+      // signature it is.
       pixy.ccc.blocks[0].printInfo();
-    // note for later: solidify each sig as red, blue, or white. 
     }
   }  
 
