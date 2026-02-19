@@ -27,10 +27,12 @@ void setup() {
   delay(100);
   Serial1.write(id,10);
   delay(100);
-  
+  Serial1.write(id,10);
+  delay(100);
+
+  byte idd[10] = {0x01, 0x64, 0x07, 0xD0, 0x00,0x00,0x00,0x00,0x00,0x27};
   delay(100);
   Serial1.write(idd,10);
-  delay(100);
 
 }
 
