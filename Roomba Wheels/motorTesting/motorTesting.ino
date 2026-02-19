@@ -50,7 +50,7 @@ void loop() {
   }
 }
 
-void changeID(uint8_t motorID){
+void changeID(uint16_t motorID){
   byte id[10] = { 0xAA, 0x55, 0x53, motorID, 0x00,0x00,0x00,0x00,0x00,0x00};
   delay(100);
   
@@ -66,20 +66,18 @@ void breakMotor(){
   Serial.write(id,10);
 }
 
-uint8_t* getID() {
+
+uint16_t* getID() {
   byte id[10] = { 0xC8, 0x64, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xDE };
   delay(100);
   Serial.write(id, 10);
-
-  uint8_t response[10];  // Fixed: array of uint8_t, not array of pointers
+  uint16_t response[10];  // Fixed: array of uint16_t, not array of pointers
   readResponse(response, 10);  // Pass array (decays to pointer)
-  
-
   return response; 
 }
 
 
-
+// for debug
 uint8_t* buffToHex(uint8_t* buffer, uint8_t* data){
   sprintf(buffer, "%02X %02X %02X %02X %02X %02X %02X %02X %02X %02X", 
   data[0],data[1],data[2],data[3],data[4],
@@ -87,9 +85,9 @@ uint8_t* buffToHex(uint8_t* buffer, uint8_t* data){
   return buffer;
 }
 
-
-uint8_t* readResponse(uint8_t* buffer, uint8_t length) {
-  uint8_t index = 0;
+// from BricoGeek_DirectDriveServo.cpp
+uint16_t* readResponse(uint16_t* buffer, uint16_t length) {
+  uint16_t index = 0;
   unsigned long startTime = millis();
   while (index < length && (millis() - startTime) < 1000) {
     if (Serial3.available()) {
@@ -99,31 +97,35 @@ uint8_t* readResponse(uint8_t* buffer, uint8_t length) {
   return buffer;
 }
 
-//from -2100 to 2100 
-int8_t* speedToHex(int speed, int8_t* buffer){
-  if(speed < 0){
-    speed = 0xFFFF - speed + 1;
-  } 
- 
-  sprintf(buffer, "%04X", speed); //format for buffer
-  return buffer;
-}
-
-
-void go50(uint8_t motorID){
+void go50(uint16_t motorID){
   byte id[10] = {motorID, 0x64, 0xFE, 0x0C, 0x00,0x00,0x00,0x00,0x00,0x16};
   delay(100);
   Serial.write(id,10);
 }
 
-void setModeLoop(uint8_t motorID){
+void setModeLoop(uint16_t motorID){
   byte id[10] = {motorID, 0xA0, 0x02, 0x00, 0x00,0x00,0x00,0x00,0x00,0xE4};
   delay(100);
   Serial.write(id,10);
 }
 
+int16_t* decimalToHex(int16_t num){
+      int16_t high = (num >> 8) & 0xFF;  
+      int16_t low = num & 0xFF;
+      int16_t hex[2] = {high, low};
+      return hex;
+}
 
+//from -2100 to 2100
+void goSpeed(uint16_t motorID, uint16_t speed){
 
+  int16_t* speedHex = {};
+  speedHex = decimalToHex(speed);
+  int16_t high = speedHex[0];
+  int16_t low = speedHex[1];
+  byte command[10] = {motorID, 0x64, high, low, 0x00,0x00,0x00,0x00,0x00,0x16};
+  Serial.write(command,10);
+}
 
 
 
