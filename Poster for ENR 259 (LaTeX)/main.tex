@@ -1,0 +1,160 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% MCC ASEE Model Design Competition Poster
+% Size: 2ft tall x 4ft wide (24in x 48in)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[final]{beamer}
+
+% ====================
+% Packages
+% ====================
+\usepackage[orientation=landscape,size=custom,width=121.92,height=60.96,scale=1.2]{beamerposter} % 48in x 24in
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{multicol}
+\usepackage[most]{tcolorbox} % 'most' loads common libraries for skins/breaking
+
+% ====================
+% Color Definitions
+% ====================
+\definecolor{mccgold}{HTML}{C99700} % MCC Gold
+\definecolor{mccblack}{HTML}{000000} % Background Black
+\definecolor{mccwhite}{HTML}{FFFFFF} % Text White
+
+% ====================
+% Custom "Function" for Round Boxes
+% ====================
+\newtcolorbox{goldbox}[1]{
+  colback=mccblack,        % Background color of the content
+  colframe=mccgold,        % Color of the border and header background
+  coltitle=mccblack,       % Color of the title text (Black on Gold)
+  coltext=mccwhite,        % Color of the body text
+  fonttitle=\bfseries\Large\centering, % Title font settings
+  title=#1,                % The title text passed to the function
+  arc=5mm,                 % <--- CHANGE THIS VALUE to make corners rounder (e.g., 10mm)
+  boxrule=1mm,             % Thickness of the gold border
+  titlerule=0mm,           % Remove line between title and body
+  toptitle=3mm,
+  bottomtitle=3mm,
+  enhanced,                % specific tcolorbox setting for better graphics
+  drop shadow              % Optional: adds a slight shadow for depth
+}
+
+% ====================
+% Style & Theme Setup
+% ====================
+\setbeamercolor{background canvas}{bg=mccblack}
+\setbeamercolor{normal text}{fg=mccwhite}
+\setbeamerfont{title}{size=\veryHuge, series=\bfseries}
+\setbeamerfont{author}{size=\Large}
+\setbeamerfont{institute}{size=\large}
+\setbeamertemplate{navigation symbols}{}
+
+% ====================
+% Document Start
+% ====================
+\begin{document}
+\begin{frame}[t]
+
+% ---------------------------------------------------------------------------
+% Header Section
+% ---------------------------------------------------------------------------
+\begin{columns}[T]
+    % Left Logo
+    \begin{column}{0.15\paperwidth}
+        \centering
+        % \includegraphics[width=0.6\linewidth]{spartan_logo.png} 
+        \vspace{1cm}
+        \textbf{\color{mccgold}[Spartan Logo]}
+    \end{column}
+
+    % Center Title Text
+    \begin{column}{0.7\paperwidth}
+        \centering
+        \vspace{0.5cm}
+        {\usebeamerfont{title}\color{mccgold} 2026 ASEE MODEL DESIGN COMPETITION}\\[0.5em]
+        {\usebeamerfont{author}\color{mccwhite} Team Members Names Here}\\[0.2em]
+        {\usebeamerfont{institute}\color{mccwhite} Department of Engineering Science \& Physics, Rochester NY 14623}
+        \vspace{1cm}
+    \end{column}
+
+    % Right Logo
+    \begin{column}{0.15\paperwidth}
+        \centering
+        % \includegraphics[width=0.6\linewidth]{mcc_logo.png} 
+        \vspace{1cm}
+        \textbf{\color{mccgold}[MCC Logo]}
+    \end{column}
+\end{columns}
+
+\vspace{0.5cm}
+
+% Gold Separator Line
+\textcolor{mccgold}{\rule{\paperwidth}{2pt}}
+\vspace{1cm}
+
+% ---------------------------------------------------------------------------
+% Content Columns
+% ---------------------------------------------------------------------------
+\begin{columns}[T]
+
+    % --- COLUMN 1: Robot Operation ---
+    \begin{column}{0.23\paperwidth}
+        \begin{goldbox}{ROBOT OPERATION}
+            Write your overview of the robot operation here. This section typically explains the functionality and control mechanisms.
+            \begin{itemize}
+                \item Feature A
+                \item Control Logic B
+                \item Human-Machine Interface
+            \end{itemize}
+            \vspace{1cm} % Extra space if needed
+        \end{goldbox}
+    \end{column}
+
+    % --- COLUMN 2: Design Development ---
+    \begin{column}{0.23\paperwidth}
+        \begin{goldbox}{DESIGN DEVELOPMENT}
+            Explain the iterative design process here.
+            \vspace{0.5cm}
+            \begin{center}
+                \fcolorbox{mccgold}{mccblack}{
+                    \parbox{0.9\linewidth}{\centering \vspace{2cm} [Design Diagram] \vspace{2cm}}
+                }
+            \end{center}
+        \end{goldbox}
+    \end{column}
+
+    % --- COLUMN 3: Fabrication & Analysis ---
+    \begin{column}{0.23\paperwidth}
+        \begin{goldbox}{FABRICATION \& ANALYSIS}
+            Detail the manufacturing techniques and any FEA or stress analysis performed.
+            \begin{enumerate}
+                \item Additive Manufacturing details
+                \item Material selection (e.g., ASA-CF08)
+                \item Structural integrity tests
+            \end{enumerate}
+        \end{goldbox}
+    \end{column}
+
+    % --- COLUMN 4: Cost Analysis ---
+    \begin{column}{0.23\paperwidth}
+        \begin{goldbox}{COST ANALYSIS}
+            Breakdown of the budget and bill of materials.
+            \vspace{1cm}
+            \begin{center}
+            \begin{tabular}{l r}
+                \color{mccgold}\textbf{Item} & \color{mccgold}\textbf{Cost (\$)} \\
+                \hline
+                Raw Materials & 50.00 \\
+                Electronics & 120.00 \\
+                Manufacturing & 30.00 \\
+                \textbf{Total} & \textbf{200.00} \\
+            \end{tabular}
+            \end{center}
+        \end{goldbox}
+    \end{column}
+
+\end{columns}
+
+\end{frame}
+\end{document}
