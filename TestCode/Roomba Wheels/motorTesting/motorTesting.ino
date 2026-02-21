@@ -34,7 +34,7 @@ void debugPrintout() {
   Serial.println("1.         Set Current Motor");
   Serial.println("2.           Set Motor Speed");
   Serial.println("3.           Set Motor Angle");
-  //Serial.println("4.            Check motor ID");
+  Serial.println("4.                Debug Test");
   //Serial.println("5. Get Motor Mode 0x02 Right");
   Serial.println("6.         Set Velocity Mode"); //not necessary
   Serial.println("7.           Set Degree Mode"); //not necessary
@@ -63,7 +63,7 @@ void debugMenu(int selection) {
     case3();
     break;
   case 4:
-  
+    setBothTiresOn();
     break;
   case 5:
     
@@ -426,4 +426,29 @@ void setBothTiresToPosMode(){
   setPositionMode();
   motorID = 2;
   setPositionMode();
+}
+
+void setBothTiresToVelocityMode(){
+  int oldID = motorID;
+  driveBreak();
+  motorID = 1;
+  setVelocityMode();
+  motorID = 2;
+  setVelocityMode();
+  motorID = oldID;
+}
+
+void setBothTiresOn(){
+  setBothTiresToVelocityMode();
+  motorID = 1;
+  setMotorSpeed(100);
+  motorID = 2;
+  setMotorSpeed(100);
+  
+  delay(2000);
+  
+  motorID = 1;
+  setMotorSpeed(0);
+  motorID = 2;
+  setMotorSpeed(0);
 }
