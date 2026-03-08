@@ -1,0 +1,114 @@
+\documentclass{article}
+\usepackage[a4paper, margin=0.5in]{geometry}
+\usepackage{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage{graphicx}
+\usepackage{titling}
+\usepackage{hyperref}
+\usepackage{multicol}
+\usepackage{titlesec}
+\usepackage{tikz}
+
+\titlespacing*{\section}{0pt}{1ex}{0.5ex}
+
+% Define a custom command for the divider
+\newcommand{\lightdivider}{%
+    \vspace{0.3em}% 
+    \noindent\begin{tikzpicture}
+        \draw[dashed, color=black!25, line width=0.5pt] (0,0) -- (\linewidth,0);
+    \end{tikzpicture}%
+    \vspace{0.3em}%
+}
+
+% --- UPDATED COMMANDS TO WORK WITH TABLE OF CONTENTS ---
+
+% Main Section Command
+\newcommand{\mysection}[1]{%
+    \addcontentsline{toc}{section}{#1} % Adds to Table of Contents
+    \vspace{1em} 
+    {\large \textbf{\strut #1}}\\[-0.8em]
+    \rule{\linewidth}{0.8pt}\par\vspace{0.5em}
+}
+
+% Subsection Command
+\newcommand{\mysubsection}[1]{%
+    \addcontentsline{toc}{subsection}{#1} % Adds to Table of Contents
+    \vspace{0.8em}
+    {\normalsize \textbf{\strut #1}}\\[-0.9em]
+    \rule{\linewidth}{0.4pt}\par\vspace{0.4em}
+}
+
+% Sub-subsection Command
+\newcommand{\mysubsub}[1]{%
+    \addcontentsline{toc}{subsubsection}{#1} % Adds to Table of Contents
+    \vspace{0.6em}
+    {\small \textit{\strut #1}}\\[-1.1em]
+    \rule{0.3\linewidth}{0.2pt}\par\vspace{0.3em}
+}
+
+% Names for the Authors of the Team
+\newcommand{\NameOne}{Sophia Buchman}
+\newcommand{\NameTwo}{Connor K.}
+\newcommand{\NameThree}{Kyle Stowbridge}
+\newcommand{\NameFour}{Nalani Sears}
+\newcommand{\NameFive}{Juilia Bettin}
+
+\begin{document}
+
+% --- TITLE PAGE ---
+\begin{titlepage}
+    \centering
+    {\scshape\Large ENR 259 --- Engineering Design Lab} \\
+    \vspace{0.5cm}
+    {\large ASEE 2026 Competition} \\
+    \vspace{1.5cm}
+    \rule{\linewidth}{2pt} \\[0.4cm]
+    {\huge \bfseries "Robot Name"} \\
+    \rule{\linewidth}{2pt} \\[1.5cm]
+    \textbf{Team Members:} \\
+    \NameOne \quad $\bullet$ \quad \NameTwo \quad $\bullet$ \quad \NameThree \\
+    \NameFour \quad $\bullet$ \quad \NameFive
+    \vfill
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=0.7\textwidth]{cst_pic.png}
+    \end{figure}
+    \vfill
+    {\large \today}
+\end{titlepage}
+
+% --- TABLE OF CONTENTS PAGE ---
+\pagenumbering{roman} % Uses i, ii, iii for intro pages
+\tableofcontents
+\newpage
+\pagenumbering{arabic} % Resets to 1, 2, 3 for main content
+
+% --- MAIN CONTENT ---
+\noindent
+\begin{minipage}[t]{0.475\textwidth}
+\section{Premable}
+Current Overall design and introduction into the main game report
+
+\section{Mechanical Subsystems}
+Name each of the subsystems here and brief intro or something.
+\subsection{Roomba Bot}
+\subsection{House Bot Structure}
+\subsection{Electronics Closure}
+\subsection{Vacuum System}
+\subsection{Ball Sorting System}
+\section{Electronic Subsystems}
+\subsection{Ardiuno}
+\subsection{Vacuum Motor System}
+\section{Code-base}
+\subsection{Roomba Motor Library}
+\subsection{Vacuum Motor Library}
+\subsection{Bonk Motor}
+\subsection{Debug_display}
+\subsection{Gyro}
+\subsection{Pixy_2}
+\subsection{Distance Sensor}
+\section{Thoughts on Progress}
+\section{Looking Forward}
+\end{minipage}
+
+\end{document}
