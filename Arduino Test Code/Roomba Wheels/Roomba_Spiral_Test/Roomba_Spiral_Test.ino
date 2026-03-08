@@ -1,42 +1,64 @@
-#define MOTORID 0x01
+
 #define BAUD_RATE 115200
 
-
 int motorID; //1 for L 2 for R
-int motorSpeed = 200;
-int delay = 5000;
-
-//TO DO:
-// make velocity library
+const int BASE_SPEED = 100; // spd increases scale of path
+const int START_TURN = 20; // Initial turn magnitude
+const int TURN_DECAY = 1; // Increment rate (how fast it tightens)
+const int SPIRAL_STEPS = 100; // steps //increase: increases path length //decrease: decreases path length (how long the robot moves on the spiral)
+const int STEP_DELAY = 100; // delay //increase: increases length of linear movement. lower: less jank, higher: more jank ((resolution))
 
 void setup() {
-  Serial.begin(115200); // Debug Monitor
+
+  Serial.begin(BAUD_RATE); // Debug Monitor
   Serial1.begin(BAUD_RATE); // Motor Port Left
   Serial2.begin(BAUD_RATE); // Motor Port Right
-  motorId = 1;
-  setMotorSpeed(50);
-  motorId = 2;
-  // program under here:
+  Serial.println("Start Spiral");
 
-  while(delay > 0){
-    setMotorSpeed(motorSpeed);
-    motorSpeed = motorSpeed - 5;
-    delay(delay);
-    delay = delay-50;
-  }
+ 
+
+  for (int i = 0; i < SPIRAL_STEPS; i++) {
+
+    int currentTurn = (i * TURN_DECAY) + START_TURN; 
+
+    int speedLeft = BASE_SPEED - currentTurn;  // Decrease/Reverse Left motor
+    int speedRight = BASE_SPEED + currentTurn; // Increase Right motor
+
+    if (speedLeft < -255) speedLeft = -255;
+    if (speedRight > 255) speedRight = 255; 
+
+ 
+    motorID = 1;
+    setMotorSpeed(1 * speedLeft);
+    delay(50); // delay for ms bc serial is laggy
+    motorID = 2;
+    setMotorSpeed(-1 * speedRight);
+
+    Serial.print("Step: "); Serial.print(i);
+    Serial.print(" | L: "); Serial.print(speedLeft);
+    Serial.print(" | R: "); Serial.print(speedRight);
+    Serial.print(" | Turn: "); Serial.println(currentTurn);
+
+    delay(STEP_DELAY);
+  }  
 }
 
 void loop() {
-  driveBreak(); //break both wheels
-  while(1);
+  // Stop motors after spiral is done
+  Serial.println("Done!");
+  motorID = 1;
+  setMotorSpeed(0);
+  delay(50);
+  motorID = 2;
+  setMotorSpeed(0);
+  while(1); // Halt execution
 }
-
 
 
 void setPositionMode() {
 
   uint8_t packet[10] = {
-    MOTORID,
+    0x01,
     0xA0,
     0x03,
     0x00,
@@ -54,7 +76,7 @@ void setPositionMode() {
 void setVelocityMode() {
 
   uint8_t packet[10] = {
-    MOTORID,
+    0x01,
     0xA0,
     0x02,
     0x00,
@@ -73,7 +95,7 @@ void setVelocityMode() {
 void setMotorSpeed(int16_t rpm) {
   int16_t speedValue = rpm * 10;
   uint8_t packet[10] = {
-    MOTORID,
+    0x01,
     0x64,
     (speedValue >> 8) & 0xFF,
     speedValue & 0xFF,
@@ -90,7 +112,7 @@ void setMotorSpeed(int16_t rpm) {
 void requestMotorStatus() {
 
   uint8_t packet[10] = {
-    MOTORID,
+    0x01,
     0x74,
     0x00,
     0x00,
@@ -136,7 +158,7 @@ void setID(uint8_t id) {
 void requestMotorMode() {
 
   uint8_t packet[10] = {
-    MOTORID,
+    0x01,
     0x75,
     0x00,
     0x00,
@@ -209,5 +231,3 @@ void setBothTiresToVelocityMode(){
   setVelocityMode();
   motorID = oldID;
 }
-
-
