@@ -1,0 +1,20 @@
+\contentsline {section}{Preamble}{1}{Doc-Start}%
+\contentsline {section}{Mechanical Subsystems}{1}{Doc-Start}%
+\contentsline {subsection}{Roomba Bot}{1}{section*.1}%
+\contentsline {subsection}{House Bot Structure}{1}{section*.1}%
+\contentsline {subsection}{Electronics Closure}{1}{section*.1}%
+\contentsline {subsection}{Vacuum System}{1}{section*.1}%
+\contentsline {subsection}{Ball Sorting System}{1}{section*.1}%
+\contentsline {section}{Electronic Subsystems}{1}{section*.1}%
+\contentsline {subsection}{Arduino}{1}{section*.2}%
+\contentsline {subsection}{Vacuum Motor System}{1}{section*.2}%
+\contentsline {section}{Code-base}{1}{section*.2}%
+\contentsline {subsection}{Roomba Motor Library}{1}{section*.3}%
+\contentsline {subsection}{Vacuum Motor Library}{1}{section*.3}%
+\contentsline {subsection}{Bonk Motor}{1}{section*.3}%
+\contentsline {subsection}{Debug\_display}{1}{section*.3}%
+\contentsline {subsection}{Gyro}{1}{section*.3}%
+\contentsline {subsection}{Pixy\_2}{1}{section*.3}%
+\contentsline {subsection}{Distance Sensor}{1}{section*.3}%
+\contentsline {section}{Thoughts on Progress}{1}{section*.3}%
+\contentsline {section}{Looking Forward}{1}{section*.3}%

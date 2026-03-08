@@ -8,10 +8,17 @@
 \usepackage{multicol}
 \usepackage{titlesec}
 \usepackage{tikz}
+\usepackage{etoolbox}
 
+% --- TOC FIXES ---
+% This ensures that even custom "addcontentsline" entries are captured
+\setcounter{tocdepth}{3}
+\setcounter{secnumdepth}{3}
+
+% Setting section spacing
 \titlespacing*{\section}{0pt}{1ex}{0.5ex}
 
-% Define a custom command for the divider
+% Custom command for the divider
 \newcommand{\lightdivider}{%
     \vspace{0.3em}% 
     \noindent\begin{tikzpicture}
@@ -20,38 +27,31 @@
     \vspace{0.3em}%
 }
 
-% --- UPDATED COMMANDS TO WORK WITH TABLE OF CONTENTS ---
-
-% Main Section Command
+% --- UPDATED COMMANDS ---
 \newcommand{\mysection}[1]{%
-    \addcontentsline{toc}{section}{#1} % Adds to Table of Contents
-    \vspace{1em} 
-    {\large \textbf{\strut #1}}\\[-0.8em]
-    \rule{\linewidth}{0.8pt}\par\vspace{0.5em}
+    \section*{#1}% Use starred version so it doesn't double-count
+    \addcontentsline{toc}{section}{#1}%
+    \vspace{-0.5em}%
+    \rule{\linewidth}{0.8pt}\par\vspace{0.5em}%
 }
 
-% Subsection Command
 \newcommand{\mysubsection}[1]{%
-    \addcontentsline{toc}{subsection}{#1} % Adds to Table of Contents
-    \vspace{0.8em}
-    {\normalsize \textbf{\strut #1}}\\[-0.9em]
-    \rule{\linewidth}{0.4pt}\par\vspace{0.4em}
+    \subsection*{#1}%
+    \addcontentsline{toc}{subsection}{#1}%
+    \vspace{-0.5em}%
+    \rule{\linewidth}{0.4pt}\par\vspace{0.4em}%
 }
 
-% Sub-subsection Command
-\newcommand{\mysubsub}[1]{%
-    \addcontentsline{toc}{subsubsection}{#1} % Adds to Table of Contents
-    \vspace{0.6em}
-    {\small \textit{\strut #1}}\\[-1.1em]
-    \rule{0.3\linewidth}{0.2pt}\par\vspace{0.3em}
-}
+% --- TOGGLE FOR IMAGE ---
+\newbool{showimage}
+\setbool{showimage}{true} 
 
-% Names for the Authors of the Team
+% Names
 \newcommand{\NameOne}{Sophia Buchman}
 \newcommand{\NameTwo}{Connor K.}
 \newcommand{\NameThree}{Kyle Stowbridge}
 \newcommand{\NameFour}{Nalani Sears}
-\newcommand{\NameFive}{Juilia Bettin}
+\newcommand{\NameFive}{Julia Bettin}
 
 \begin{document}
 
@@ -69,46 +69,57 @@
     \NameOne \quad $\bullet$ \quad \NameTwo \quad $\bullet$ \quad \NameThree \\
     \NameFour \quad $\bullet$ \quad \NameFive
     \vfill
+    
     \begin{figure}[h]
         \centering
-        \includegraphics[width=0.7\textwidth]{cst_pic.png}
+        \ifbool{showimage}{%
+            \includegraphics[width=0.7\textwidth]{cst_pic.png}
+        }{%
+            \framebox[0.7\textwidth]{\rule{0pt}{3cm} IMAGE GOES HERE}
+        }
     \end{figure}
+    
     \vfill
     {\large \today}
 \end{titlepage}
 
-% --- TABLE OF CONTENTS PAGE ---
-\pagenumbering{roman} % Uses i, ii, iii for intro pages
+% --- TABLE OF CONTENTS ---
+\pagenumbering{roman}
 \tableofcontents
 \newpage
-\pagenumbering{arabic} % Resets to 1, 2, 3 for main content
+\pagenumbering{arabic}
 
 % --- MAIN CONTENT ---
-\noindent
-\begin{minipage}[t]{0.475\textwidth}
-\section{Premable}
-Current Overall design and introduction into the main game report
+\begin{multicols}{2} 
 
-\section{Mechanical Subsystems}
-Name each of the subsystems here and brief intro or something.
-\subsection{Roomba Bot}
-\subsection{House Bot Structure}
-\subsection{Electronics Closure}
-\subsection{Vacuum System}
-\subsection{Ball Sorting System}
-\section{Electronic Subsystems}
-\subsection{Ardiuno}
-\subsection{Vacuum Motor System}
-\section{Code-base}
-\subsection{Roomba Motor Library}
-\subsection{Vacuum Motor Library}
-\subsection{Bonk Motor}
-\subsection{Debug_display}
-\subsection{Gyro}
-\subsection{Pixy_2}
-\subsection{Distance Sensor}
-\section{Thoughts on Progress}
-\section{Looking Forward}
-\end{minipage}
+\mysection{Preamble}
+Current Overall design and introduction into the main game report.
+
+\mysection{Mechanical Subsystems}
+Name each of the subsystems here.
+
+\mysubsection{Roomba Bot}
+\mysubsection{House Bot Structure}
+\mysubsection{Electronics Closure}
+\mysubsection{Vacuum System}
+\mysubsection{Ball Sorting System}
+
+\mysection{Electronic Subsystems}
+\mysubsection{Arduino}
+\mysubsection{Vacuum Motor System}
+
+\mysection{Code-base}
+\mysubsection{Roomba Motor Library}
+\mysubsection{Vacuum Motor Library}
+\mysubsection{Bonk Motor}
+\mysubsection{Debug\_display} 
+\mysubsection{Gyro}
+\mysubsection{Pixy\_2}        
+\mysubsection{Distance Sensor}
+
+\mysection{Thoughts on Progress}
+\mysection{Looking Forward}
+
+\end{multicols}
 
 \end{document}
