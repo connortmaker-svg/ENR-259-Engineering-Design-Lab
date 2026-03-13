@@ -47,7 +47,7 @@ void setup() {
   display.setCursor(10, 10);
   display_color_detected(1);
   display.setCursor(10, 20);
-  display_battery_level();
+  display_battery_level(10);
 
 
 
@@ -72,7 +72,6 @@ void display_vacuum_speed(float pulse) {
   display.println("Motor level: ");
   display.setCursor(85, 0);
   display.println(level);
-  display.setCursor(100, 0);
   display.display();
 }
 
@@ -101,7 +100,9 @@ void display_color_detected(int color) {
 }
 
 // display current battery percentage
-void display_battery_level() {
-  display.println("Batt level: 0%");
+void display_battery_level(float percentage) {
+  display.println("Batt level: ");
+  display.setCursor(80,20);
+  display.println(percentage);
   display.display();
 }
