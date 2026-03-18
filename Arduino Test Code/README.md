@@ -11,11 +11,12 @@ The `Pixy_2` folder contains code for object detection and color signature recog
 
 ### Features
 - Uses a modified `Pixy2CCC` library for enhanced item recognition.
-- Filters detected blocks based on area threshold (>40000).
+- Filters detected blocks based on area threshold (>300).
 - Prints specific info about the detected item based on its signature.
+- Actuates sorting servo based on the signature detected
 
 ### Setup
-- **Hardware**: Ensure the Pixy2 camera is connected to the Arduino (ISCP headers).
+- **Hardware**: Ensure the Pixy2 camera is connected to the Arduino (ISCP headers) and the servo is connected to pin 9 of the Arduino.
 - **Positioning**: The object should be placed approximately **3.5 cm** away from the Pixy2 camera.
 - **Lighting**: The code sets the lamp to maximum brightness for optimal detection.
 
