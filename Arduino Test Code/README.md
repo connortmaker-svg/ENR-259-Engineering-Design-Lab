@@ -11,9 +11,10 @@ The `Pixy_2` folder contains code for object detection and color signature recog
 
 ### Features
 - Uses a modified `Pixy2CCC` library for enhanced item recognition.
-- Filters detected blocks based on area threshold (>300).
+- Filters detected blocks based on area threshold (>4000).
 - Prints specific info about the detected item based on its signature.
 - Actuates sorting servo based on the signature detected
+- Uses SPI with S.S. communication (Not ISCP)
 
 ### Setup
 - **Hardware**: Ensure the Pixy2 camera is connected to the Arduino (ISCP headers) and the servo is connected to pin 9 of the Arduino.
@@ -26,6 +27,7 @@ The `Roomba Wheels` folder contains code for controlling Roomba wheels using a c
 ### Contents
 - **libFramework**: Contains the core driver library (`M0603B`).
 - **motorTesting**: A sketch for testing the motor movement and validating the driver logic.
+- **RoombaLib** : Contains a custom library for driving the servo wheels.
 
 ### Usage
 - Ensure your hardware connections match the pin definitions in the library.
