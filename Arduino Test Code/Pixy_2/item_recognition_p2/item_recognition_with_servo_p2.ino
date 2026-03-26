@@ -1,10 +1,11 @@
 // pixy 2 demo program
 // modified from hello_world pixy provided program.
 #include <Servo.h>
-#include <Pixy2.h>
+#include <Pixy2SPI_SS.h>
+
 
 // This is the main Pixy object 
-Pixy2 pixy;
+Pixy2SPI_SS pixy;
 
 Servo myservo;
 
@@ -36,7 +37,7 @@ void loop()
     uint16_t age = pixy.ccc.blocks[0].m_age;
     
     // if the area of the block is above a certain threshold, read the signature
-    if(area > 300) { 
+    if(area > 4000) { 
       // first item in pixy.ccc.blocks (always has the most area out of the blocks found)
       // printInfo is a modification to the pixy2 library. It checks the signature (1-3.
       // each of which is pre-defined as a certain golf ball color) and then prints which
