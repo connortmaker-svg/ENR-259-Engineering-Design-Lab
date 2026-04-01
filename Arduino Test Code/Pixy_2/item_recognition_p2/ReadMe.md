@@ -18,3 +18,10 @@ This program uses the pixy camera to identify the color of a ball as it passes a
 - Filters false positives by having a minumum area for color detection ( Area > 4000)
 - Additional camera settings can be adjusted in the PixyMon program
 - Still need to consider the timing between detection and servo actuation
+
+## Interrupt Item Recognition
+This program uses interrputs to sample the pixy camera so it can identify the color of a ball as it passes and communicates this color to the sorting servo
+- Functionaly the same as the item recognition with servo program
+- Compatable only with the Teensy 4.1 board
+- Requires TimerOne.h header file
+  
