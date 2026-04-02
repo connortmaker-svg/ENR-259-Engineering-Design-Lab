@@ -12,6 +12,9 @@
 // standard C libraries
 #include <stdio.h>
 
+// Teensy Multitasking
+#include <TeensyThreads.h>
+
 // for SSD1306
 #include <SPI.h>
 #include <Wire.h>
@@ -35,9 +38,9 @@
 #define SCREEN_ADDRESS 0x3C
 
 // Color signature integer values for Pixy
-#define RED 1
-#define WHITE 2
-#define BLUE 3
+#define PIXY_RED 1
+#define PIXY_WHITE 2
+#define PIXY_BLUE 3
 
 
 // for debug display and vacuum
@@ -49,6 +52,10 @@
 // ---------------------------------------------
 // Global Variables
 // ---------------------------------------------
+
+
+// void thread_func(){
+// }
 
 // ---------------------------------------------
 // Define Objects
@@ -88,6 +95,7 @@ void setup() {
   display.println("Display ready");
   display.display();
 
+//  threads.addThread(thread_func, 1);
 
 }
 
