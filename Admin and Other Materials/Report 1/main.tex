@@ -48,13 +48,137 @@
 
 % Names
 \newcommand{\NameOne}{Sophia Buchman}
-\newcommand{\NameTwo}{Connor K.}
+\newcommand{\NameTwo}{Connor Klute}
+\newcommand{\NameThree}{Kyle Stowbridge}
+\newcommand{\NameFour}{Nalani Sears}
+\newcommand{\NameFive}{Julia Bettin}
+
+\begin{document}
+\documentclass{article}
+\usepackage[a4paper, margin=0.5in]{geometry}
+\usepackage{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage{graphicx}
+\usepackage{titling}
+\usepackage{hyperref}
+\usepackage{multicol}
+\usepackage{titlesec}
+\usepackage{tikz}
+\usepackage{etoolbox}
+
+% --- TOC FIXES ---
+% This ensures that even custom "addcontentsline" entries are captured
+\setcounter{tocdepth}{3}
+\setcounter{secnumdepth}{3}
+
+% Setting section spacing
+\titlespacing*{\section}{0pt}{1ex}{0.5ex}
+
+% Custom command for the divider
+\newcommand{\lightdivider}{%
+    \vspace{0.3em}% 
+    \noindent\begin{tikzpicture}
+        \draw[dashed, color=black!25, line width=0.5pt] (0,0) -- (\linewidth,0);
+    \end{tikzpicture}%
+    \vspace{0.3em}%
+}
+
+% --- UPDATED COMMANDS ---
+\newcommand{\mysection}[1]{%
+    \section*{#1}% Use starred version so it doesn't double-count
+    \addcontentsline{toc}{section}{#1}%
+    \vspace{-0.5em}%
+    \rule{\linewidth}{0.8pt}\par\vspace{0.5em}%
+}
+
+\newcommand{\mysubsection}[1]{%
+    \subsection*{#1}%
+    \addcontentsline{toc}{subsection}{#1}%
+    \vspace{-0.5em}%
+    \rule{\linewidth}{0.4pt}\par\vspace{0.4em}%
+}
+
+% --- TOGGLE FOR IMAGE ---
+\newbool{showimage}
+\setbool{showimage}{true} 
+
+% Names
+\newcommand{\NameOne}{Sophia Buchman}
+\newcommand{\NameTwo}{Connor Klute}
 \newcommand{\NameThree}{Kyle Stowbridge}
 \newcommand{\NameFour}{Nalani Sears}
 \newcommand{\NameFive}{Julia Bettin}
 
 \begin{document}
 
+% --- TITLE PAGE ---
+\begin{titlepage}
+    \centering
+    {\scshape\Large ENR 259 --- Engineering Design Lab} \\
+    \vspace{0.5cm}
+    {\large ASEE 2026 Competition} \\
+    \vspace{1.5cm}
+    \rule{\linewidth}{2pt} \\[0.4cm]
+    {\huge \bfseries "Robot Name"} \\
+    \rule{\linewidth}{2pt} \\[1.5cm]
+    \textbf{Team Members:} \\
+    \NameOne \quad $\bullet$ \quad \NameTwo \quad $\bullet$ \quad \NameThree \\
+    \NameFour \quad $\bullet$ \quad \NameFive
+    \vfill
+    
+    \begin{figure}[h]
+        \centering
+        \ifbool{showimage}{%
+            \includegraphics[width=0.7\textwidth]{cst_pic.png}
+        }{%
+            \framebox[0.7\textwidth]{\rule{0pt}{3cm} IMAGE GOES HERE}
+        }
+    \end{figure}
+    
+    \vfill
+    {\large \today}
+\end{titlepage}
+
+% --- TABLE OF CONTENTS ---
+\pagenumbering{roman}
+\tableofcontents
+\newpage
+\pagenumbering{arabic}
+
+% --- MAIN CONTENT ---
+\begin{multicols}{2} 
+
+\mysection{Preamble}
+Current Overall design and introduction into the main game report.
+
+\mysection{Mechanical Subsystems}
+Name each of the subsystems here.
+
+\mysubsection{Roomba Bot}
+\mysubsection{House Bot Structure}
+\mysubsection{Electronics Closure}
+\mysubsection{Vacuum System}
+\mysubsection{Ball Sorting System}
+
+\mysection{Electronic Subsystems}
+\mysubsection{Arduino}
+\mysubsection{Vacuum Motor System}
+
+\mysection{Code-base}
+\mysubsection{Roomba Motor Library}
+\mysubsection{Vacuum Motor Library}
+\mysubsection{Bonk Motor}
+\mysubsection{Debug\_display} 
+\mysubsection{Gyro}
+\mysubsection{Pixy\_2}        
+\mysubsection{Distance Sensor}
+
+\mysection{Thoughts on Progress}
+\mysection{Looking Forward}
+
+\end{multicols}
+
+\end{document}
 % --- TITLE PAGE ---
 \begin{titlepage}
     \centering

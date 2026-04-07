@@ -7,7 +7,7 @@
   - Custom values between 1000 and 20000 can also be entered.
 */
 
-#include <TurbineControl.h>
+#include "TurbineControl.h"
 
 // Initialize turbine on pin 9
 TurbineControl turbine(9);
