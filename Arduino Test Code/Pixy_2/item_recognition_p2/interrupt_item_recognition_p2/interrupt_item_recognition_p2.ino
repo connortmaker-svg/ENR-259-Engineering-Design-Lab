@@ -13,6 +13,7 @@ Pixy2SPI_SS pixy;
 //Servo object
 Servo myservo;
 
+IntervalTimer pixyTimer;
 
 volatile uint16_t signature = 0;
 
@@ -26,11 +27,14 @@ void setup()
   //set lamp to max for best item detection
   pixy.setLamp(255, 255);
 
+  //Interval timer used for sampling the pixy camera every 20ms (60fps = 16.7ms)
+  pixyTimer.begin(timerISR, 20000);
   //Initialize timer for the pixy2 with a period of 1ms
-  Timer1.initialize(1000);
+  //Timer1.initialize(1000);
   //Interrupt that reads the pixy2 camera every millisecond (1kHz)
-  Timer1.attachInterrupt(timerISR);
-  Timer1.start();
+  //Timer1.attachInterrupt(timerISR);
+  //Timer1.start();
+
 }
 
 //Timer ISR that will read the pixy camera and will change the signature if a ball is detected
