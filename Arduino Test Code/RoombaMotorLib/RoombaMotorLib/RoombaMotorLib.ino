@@ -1,8 +1,12 @@
 #include "DGMotor.h"
 
+#include "TurbineControl.h"
+
 
 DGMotor leftMotor(Serial1, 1);
 DGMotor rightMotor(Serial2, 1);
+
+TurbineControl turbine(9);
 
 void setup() {
   Serial.begin(115200); // For debug output
@@ -10,8 +14,12 @@ void setup() {
   // Initialize motor serial communication
   leftMotor.begin(115200);
   rightMotor.begin(115200);
-    Serial.println("meow");
+  Serial.println("meow");
   delay(1000); // Allow motors to initialize
+  turbine.begin();
+
+  // Arm the motor on startup
+  turbine.arm();
 
 }
 
@@ -71,29 +79,35 @@ void loop() {
     }
 
     switch (sel) {
-      case 1:
-        // Set Speed (Example: 100 RPM)
-        rightMotor.setMotorSpeed(100);
-        leftMotor.setMotorSpeed(100);
-        delay(100);
-        
-        Serial.println("Running Motors");
-        break;
-      case 2:
-        driveBreak();
-        break;
-      case 3:
-        setBothTiresToPosMode();
-        leftMotor.setMotorDegrees(30);
-        rightMotor.setMotorDegrees(30);
+    case 1:
+      // Set Speed (Example: 100 RPM)
+      rightMotor.setMotorSpeed(300);
+      leftMotor.setMotorSpeed(-300);
+      delay(100);
+
+      Serial.println("Running Motors");
+      break;
+    case 2:
+      driveBreak();
+      break;
+    case 3:
+      setBothTiresToPosMode();
+      leftMotor.setMotorDegrees(30);
+      rightMotor.setMotorDegrees(30);
 
       break;
-      case 5:
-        setBothTiresOn();
-        break;
-      default:
-        Serial.println("Invalid choice.");
-        break;
+    case 4:
+      turbine.debugControl_inp("2000");
+      break;
+    case 5:
+      turbine.debugControl_inp("1000");
+      break;
+    case 6:
+      setBothTiresOn();
+      break;
+    default:
+      Serial.println("Invalid choice.");
+      break;
     }
   }
 }
