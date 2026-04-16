@@ -28,18 +28,19 @@ void setup() {
 
 void loop() {
   time_now = millis();
-  VL53L0X_RangingMeasurementData_t measure;
   // Serial.print("Reading a measurement... ");
-  lox.rangingTest(&measure, false);  // pass in 'true' to get debug data printout!
-
-
   while (millis() < time_now + PERIOD) {
+    uint16_t distance = distance_sensor();
+  }
+}
+
+uint16_t distance_sensor(void) {
+    VL53L0X_RangingMeasurementData_t measure;
+      lox.rangingTest(&measure, false);  // pass in 'true' to get debug data printout!
+
     if (measure.RangeStatus != 4) {  // phase failures have incorrect data
-      if (measure.RangeMilliMeter < MAX_DISTANCE) {
-        Serial.print("in range.");
-      }
+      return measure.RangeMilliMeter;
     } else {
       // Serial.println(" out of range ");
     }
-  }
 }
