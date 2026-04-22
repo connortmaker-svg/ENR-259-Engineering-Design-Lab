@@ -20,4 +20,8 @@ void loop() {
     delay(15);                       // waits 15ms for the servo to reach the position
   }
   Serial.println("180 done");
+
+  while(Serial.avalible()){
+    Serial.write();
+  }
 }
