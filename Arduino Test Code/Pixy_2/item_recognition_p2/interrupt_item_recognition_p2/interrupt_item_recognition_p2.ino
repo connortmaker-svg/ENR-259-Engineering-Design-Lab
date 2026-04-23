@@ -3,7 +3,6 @@
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
-#include <TimerOne.h>
 #include <Servo.h>
 #include <Pixy2SPI_SS.h>
 
@@ -75,4 +74,3 @@ void loop()
   }
   SPI.endTransaction();
 }
-

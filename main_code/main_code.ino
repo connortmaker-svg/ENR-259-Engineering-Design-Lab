@@ -13,7 +13,9 @@
 #include <stdio.h>
 
 // Teensy Multitasking
-#include <TeensyThreads.h>
+// #include <TeensyThreads.h>
+// Teensy PWM (Hardware)
+#include <Teensy_PWM.h>
 
 // for SSD1306
 #include <SPI.h>
@@ -21,11 +23,15 @@
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
 
+// for Teensy interrupts
+#include <avr/io.h>
+#include <avr/interrupt.h>
+
 // for Pixy2
 // #include <Pixy2SPI_SS.h>
 
 // for servo and vacuum
-// #include <Servo.h>
+#include <Servo.h>
 
 // ---------------------------------------------
 // Symbolic Constants
@@ -42,9 +48,23 @@
 #define PIXY_WHITE 2
 #define PIXY_BLUE 3
 
+#define PIXY_SAMPLE_PERIOD 20000 //measured in microseconds
+#define PIXY_ISR_PRIORITY 128
+
+//Pins for sorting and chute servos
+#define SORTING_SERVO_PIN 9
+#define RED_SERVO_PIN 4
+#define WHITE_SERVO_PIN 5
+#define BLUE_SERVO_PIN 6
+
 
 // for debug display and vacuum
 #define BAUD_RATE_0 9600
+
+//PWM pin and values for intake motor
+#define PWM_PIN  4
+#define PWM_FREQ  47400.0f
+#define PWM_DC  50.0f //Duty cycle in in percentage (0-100%)
 
 // for the servo wheels, pixy, and servo sort
 // #define BAUD_RATE_1 115200
@@ -53,6 +73,7 @@
 // Global Variables
 // ---------------------------------------------
 
+//volatile uint16_t signature;
 
 // void thread_func(){
 // }
@@ -65,10 +86,18 @@
 // For Arduino Mega: 20 (SDA) and 21 (SCL)
 // For Teensy 4.1: 17 (SDA) and 16 (SCL)
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
+//PWM object for intake motor
+Teensy_PWM* PWM_Instance;
+//Timer for pixy interrupts
+IntervalTimer pixyTimer;
 
 // For sorting:
 // Pixy2 pixy;
-// Servo sorting_servo;
+Servo sortingServo;
+Servo redServo;
+Servo whiteServo;
+Servo blueServo;
+
 
 // Vacuum: (assuming we're using Servo library)
 // Servo vacuum;
@@ -95,6 +124,24 @@ void setup() {
   display.println("Display ready");
   display.display();
 
+  //Initialize SPI channel
+  pinMode(8, OUTPUT);
+  SPI.begin();
+  SPI.usingInterrupt(128);
+
+  sortingServo.attach(SORTING_SERVO_PIN);
+  redServo.attach(RED_SERVO_PIN);
+  blueServo.attach(BLUE_SERVO_PIN);
+  whiteServo.attach(WHITE_SERVO_PIN);
+
+
+  //Initialize pixy camera and interrupt timer
+  //pixy.init();
+  //pixy.setLamp(255, 255);
+  //pixyTimer.priority(128);
+  //pixyTimer.begin(pixyISR, PIXY_SAMPLE_PERIOD);
+
+  PWM_Instance = new Teensy_PWM(PWM_PIN, PWM_FREQ, PWM_DC);
 //  threads.addThread(thread_func, 1);
 
 }
@@ -103,6 +150,17 @@ void loop() {
   // put your main code here, to run repeatedly:
 
 }
+
+// ---------------------------------------------
+// Interrupts 
+// ---------------------------------------------
+//void pixyISR(){
+//  pixy.ccc.getBlocks();
+//  if(pixy.ccc.numBlocks > 0){
+//    signature = pixy.ccc.blocks[0].m_signature;
+//  }
+//}
+
 
 // ---------------------------------------------
 // Display Functions
@@ -150,3 +208,16 @@ void display_vacuum_speed(float pulse) {
     display.println(percentage);
     display.display();
   }
+
+// ---------------------------------------------
+// Other Functions
+// ---------------------------------------------
+void drop_blue(){
+  blueServo.write(90);
+}
+void drop_red() {
+  redServo.write(90);
+}
+void drop_white() {
+  whiteServo.write(90);
+}

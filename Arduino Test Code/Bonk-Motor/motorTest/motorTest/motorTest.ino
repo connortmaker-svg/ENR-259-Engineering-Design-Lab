@@ -5,14 +5,14 @@
 */
 
 
-#include "Teensy_PWM.h"
+#include <Teensy_PWM.h>
 
 //Create PWM instance
 Teensy_PWM* PWM_Instance;
 
-#define BAUD_RATE = 115200  
-#define PWM_FREQ = 47400.0f //Default freq for the Teensy 4.1
-#define PWM_PIN = 4         //Can be changed
+#define BAUD_RATE  115200  
+#define PWM_FREQ  47400.0f //Default freq for the Teensy 4.1
+#define PWM_PIN  4         //Can be changed
 
 
 void setup() {
