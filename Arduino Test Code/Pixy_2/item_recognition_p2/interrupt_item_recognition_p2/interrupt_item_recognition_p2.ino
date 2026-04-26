@@ -3,7 +3,6 @@
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
-#include <TimerOne.h>
 #include <Servo.h>
 #include <Pixy2SPI_SS.h>
 
@@ -12,7 +11,8 @@
 Pixy2SPI_SS pixy;
 //Servo object
 Servo myservo;
-
+//Timer used for pixy interrupts
+IntervalTimer pixyTimer;
 
 volatile uint16_t signature = 0;
 
@@ -20,17 +20,21 @@ void setup()
 {
   Serial.begin(115200);
   Serial.print("Starting...\n");
+
+  pinMode(8, OUTPUT);
+  SPI.begin();
+  SPI.usingInterrupt(128);
+
   myservo.attach(9);
 
   pixy.init();
   //set lamp to max for best item detection
   pixy.setLamp(255, 255);
 
-  //Initialize timer for the pixy2 with a period of 1ms
-  Timer1.initialize(1000);
-  //Interrupt that reads the pixy2 camera every millisecond (1kHz)
-  Timer1.attachInterrupt(timerISR);
-  Timer1.start();
+  //Interval timer used for sampling the pixy camera every 20ms (60fps = 16.7ms)
+  pixyTimer.priority(128);
+  pixyTimer.begin(timerISR, 20000);
+
 }
 
 //Timer ISR that will read the pixy camera and will change the signature if a ball is detected
@@ -43,6 +47,7 @@ void timerISR(){
 
 void loop()
 { 
+  SPI.beginTransaction(SPISettings(PIXY_SPI_CLOCKRATE, MSBFIRST, SPI_MODE3));
   //Switch statment with a case for each ball color (1-red, 2-white, 3-blue)
   switch (signature) {
   //Red ball detected
@@ -67,5 +72,5 @@ void loop()
   default:  
     break;
   }
+  SPI.endTransaction();
 }
-

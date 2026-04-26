@@ -15,9 +15,10 @@ The `Pixy_2` folder contains code for object detection and color signature recog
 - Prints specific info about the detected item based on its signature.
 - Actuates sorting servo based on the signature detected
 - Uses SPI with S.S. communication (Not ISCP)
+- Reads camera data with a timer interrupt (IntervalTimer)
 
 ### Setup
-- **Hardware**: Ensure the Pixy2 camera is connected to the Arduino (ISCP headers) and the servo is connected to pin 9 of the Arduino.
+- **Hardware**: Ensure the Pixy2 camera is properly connected to the Teensy 4.1 and the servo is connected to pin 9.
 - **Positioning**: The object should be placed approximately **3.5 cm** away from the Pixy2 camera.
 - **Lighting**: The code sets the lamp to maximum brightness for optimal detection.
 

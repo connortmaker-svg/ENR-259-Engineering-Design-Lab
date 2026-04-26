@@ -23,5 +23,11 @@ This program uses the pixy camera to identify the color of a ball as it passes a
 This program uses interrputs to sample the pixy camera so it can identify the color of a ball as it passes and communicates this color to the sorting servo
 - Functionaly the same as the item recognition with servo program
 - Compatable only with the Teensy 4.1 board
-- Requires TimerOne.h header file
+- Uses an IntervalTimer object for timer interrupts (Teensyduino)
+- Uses the SPI library (Arduino IDE)
+### Setup
+- S.S pin is set to pin 8 on the Teensy (Can be configured to any pin)
+- Uses pins 11(MOSI), 12(MISO), and 13(SCK) on the Teensy for SPI communication
+- Uses pins 4(MOSI), 1(MISO), 3(SCK), and 7(S.S) on the pixy camera
+- Servo is attached to pin 9
   
