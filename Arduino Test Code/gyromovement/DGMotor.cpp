@@ -1,7 +1,6 @@
 
 #include "DGMotor.h"
 
-
 DGMotor::DGMotor(HardwareSerial& serial, uint8_t motorID)
   : _serial(serial), _motorID(motorID) {}
 
@@ -92,7 +91,7 @@ void DGMotor::requestMotorMode() {
   calculateAndSend(packet);
 }
 
-// Immediate stop using the hardcoded 0x50 CRC packet from the reference
+// Immediate stop using the hardcoded 0x50 CRC packet 
 void DGMotor::brake() {
   uint8_t packet[10] = {
     _motorID,

@@ -1,12 +1,14 @@
 #include "DGMotor.h"
 
-#include "TurbineControl.h"
+
+int input1 = 14;
+int input2 = 15;
+int enable = 36;
 
 
-DGMotor leftMotor(Serial1, 1);
-DGMotor rightMotor(Serial2, 1);
+DGMotor leftMotor(Serial6, 1);
+DGMotor rightMotor(Serial7,1);
 
-TurbineControl turbine(9);
 
 void setup() {
   Serial.begin(115200); // For debug output
@@ -14,13 +16,24 @@ void setup() {
   // Initialize motor serial communication
   leftMotor.begin(115200);
   rightMotor.begin(115200);
+  delay(10);
   Serial.println("meow");
   delay(1000); // Allow motors to initialize
-  turbine.begin();
 
-  // Arm the motor on startup
-  turbine.arm();
+  
+  
+  // pinMode(enable, OUTPUT);
+  // pinMode(input1, OUTPUT);
+  // pinMode(input2, OUTPUT);
 
+  // digitalWrite(enable, HIGH);
+  // digitalWrite(input2, LOW);
+
+  // analogWrite(input1, 300);
+
+  // setBothTiresOn();
+
+ 
 }
 
 // Function to brake both tires
@@ -58,8 +71,8 @@ void turnRight(int deg) {
 // Set both tires on (Velocity Mode Demo)
 void setBothTiresOn() {
   setBothTiresToVelocityMode();
-  leftMotor.setMotorSpeed(100);
-  rightMotor.setMotorSpeed(100);
+  leftMotor.setMotorSpeed(-300);
+  rightMotor.setMotorSpeed(300);
 
   delay(2000);
 
@@ -80,7 +93,8 @@ void loop() {
 
     switch (sel) {
     case 1:
-      // Set Speed (Example: 100 RPM)
+      // Set Speed1 (Example: 100 RPM)
+      setBothTiresToVelocityMode();
       rightMotor.setMotorSpeed(300);
       leftMotor.setMotorSpeed(-300);
       delay(100);
@@ -91,16 +105,18 @@ void loop() {
       driveBreak();
       break;
     case 3:
-      setBothTiresToPosMode();
-      leftMotor.setMotorDegrees(30);
-      rightMotor.setMotorDegrees(30);
+      setBothTiresToVelocityMode();
+      rightMotor.setMotorSpeed(-300);
+      leftMotor.setMotorSpeed(300);
+      delay(100);
 
       break;
     case 4:
-      turbine.debugControl_inp("2000");
+      leftMotor.setMotorSpeed(300);
+      delay(500);
+      leftMotor.setMotorSpeed(0);
       break;
     case 5:
-      turbine.debugControl_inp("1000");
       break;
     case 6:
       setBothTiresOn();

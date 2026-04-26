@@ -8,21 +8,30 @@
 */
 
 #include <Servo.h>
+#include <Arduino.h>
 
 Servo myservo;  // create Servo object to control a servo
 // twelve Servo objects can be created on most boards
 
-int pos = 0;    // variable to store the servo position
 
 void setup() {
-  myservo.attach(5);  // attaches the servo on pin 9 to the Servo object
+  Serial.begin(9600);
+  pinMode(A2, INPUT);
+  myservo.attach(3);  // attaches the servo on pin 9 to the Servo object
+  myservo.write(0); //set to og pos
 }
 
 void loop() {
-    Serial.println("Please give servo val: ");
-    waitForUserInput();  
-    sel();
-    
+    Serial.println();
+    int batlvl = analogRead(A2);
+    while(batlvl < 500){
+    myservo.write(0);
+    delay(3000);
+    myservo.write(180); 
+    delay(2000);
+    batlvl = analogRead(A2);
+    }
+
 }
 
 void sel(){
