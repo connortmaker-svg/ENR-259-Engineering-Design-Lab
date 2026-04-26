@@ -3,7 +3,6 @@
 #include <Servo.h>
 #include <Pixy2SPI_SS.h>
 
-
 // This is the main Pixy object 
 Pixy2SPI_SS pixy;
 
