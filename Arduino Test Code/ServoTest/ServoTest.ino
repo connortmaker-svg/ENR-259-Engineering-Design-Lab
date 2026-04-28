@@ -21,7 +21,7 @@ void loop() {
   }
   Serial.println("180 done");
 
-  while(Serial.avalible()){
-    Serial.write();
+  while(Serial.available()){
+    Serial.read();
   }
 }
