@@ -14,7 +14,7 @@
 
 // Teensy Multitasking
 // #include <TeensyThreads.h>
-// Teensy PWM (Hardware)
+
 #include <Teensy_PWM.h>
 
 // for SSD1306
@@ -22,6 +22,14 @@
 #include <Wire.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
+
+//for gyro
+#include <Adafruit_MPU6050.h>
+#include <Adafruit_Sensor.h>
+
+//for wheels
+#include "DGMotor.h"
+#include "HardwareSerial.h"
 
 // for Teensy interrupts
 #include <avr/io.h>
@@ -67,7 +75,7 @@
 #define PWM_DC  50.0f //Duty cycle in in percentage (0-100%)
 
 // for the servo wheels, pixy, and servo sort
-// #define BAUD_RATE_1 115200
+#define BAUD_RATE_1 115200
 
 // ---------------------------------------------
 // Global Variables
@@ -89,7 +97,7 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 //PWM object for intake motor
 Teensy_PWM* PWM_Instance;
 //Timer for pixy interrupts
-IntervalTimer pixyTimer;
+//IntervalTimer pixyTimer;
 
 // For sorting:
 // Pixy2 pixy;
@@ -98,12 +106,10 @@ Servo redServo;
 Servo whiteServo;
 Servo blueServo;
 
+//Wheels
+DGMotor leftMotor(Serial6, 1);
+DGMotor rightMotor(Serial7, 1);
 
-// Vacuum: (assuming we're using Servo library)
-// Servo vacuum;
-//
-// Or using turbine control
-// TurbineControl turbine(9)
 
 void setup() {
   // put your setup code here, to run once:
@@ -133,6 +139,9 @@ void setup() {
   redServo.attach(RED_SERVO_PIN);
   blueServo.attach(BLUE_SERVO_PIN);
   whiteServo.attach(WHITE_SERVO_PIN);
+
+  leftMotor.begin(BAUD_RATE_1);
+  rightMotor.begin(BAUD_RATE_1);
 
 
   //Initialize pixy camera and interrupt timer
