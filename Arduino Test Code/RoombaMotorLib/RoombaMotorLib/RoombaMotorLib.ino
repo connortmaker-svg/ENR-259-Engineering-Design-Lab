@@ -6,8 +6,8 @@ int input2 = 15;
 int enable = 36;
 
 
-DGMotor leftMotor(Serial6, 1);
-DGMotor rightMotor(Serial7,1);
+DGMotor leftMotor(Serial7, 1);
+DGMotor rightMotor(Serial6,1);
 
 
 void setup() {
@@ -19,7 +19,7 @@ void setup() {
   delay(10);
   Serial.println("meow");
   delay(1000); // Allow motors to initialize
-
+ 
   
   
   // pinMode(enable, OUTPUT);
@@ -94,9 +94,8 @@ void loop() {
     switch (sel) {
     case 1:
       // Set Speed1 (Example: 100 RPM)
-      setBothTiresToVelocityMode();
-      rightMotor.setMotorSpeed(300);
-      leftMotor.setMotorSpeed(-300);
+      rightMotor.setMotorSpeed(0);
+      leftMotor.setMotorSpeed(400);
       delay(100);
 
       Serial.println("Running Motors");
@@ -113,12 +112,13 @@ void loop() {
       break;
     case 4:
       leftMotor.setMotorSpeed(300);
-      delay(500);
-      leftMotor.setMotorSpeed(0);
+      //delay(500);
+      //leftMotor.setMotorSpeed(0);
       break;
     case 5:
       break;
     case 6:
+    
       setBothTiresOn();
       break;
     default:
