@@ -13,7 +13,7 @@
 #include <stdio.h>
 
 // Teensy Multitasking
-// #include <TeensyThreads.h>
+#include <TeensyThreads.h>
 
 #include <Teensy_PWM.h>
 
@@ -36,7 +36,7 @@
 #include <avr/interrupt.h>
 
 // for Pixy2
-// #include <Pixy2SPI_SS.h>
+#include <Pixy2SPI_SS.h>
 
 // for servo and vacuum
 #include <Servo.h>
@@ -77,11 +77,25 @@
 // for the servo wheels, pixy, and servo sort
 #define BAUD_RATE_1 115200
 
+#define RAD2DEG (180.0/PI);
+
 // ---------------------------------------------
 // Global Variables
 // ---------------------------------------------
 
 //volatile uint16_t signature;
+
+//Variables for gyro PID 
+float GzError = 0; // z calib offset
+float yaw = 0;     // yaw
+int TpLeft = 190;  // Target base power for left motor
+int TpRight = 190; // Target base power for right motor
+float Kp = 2.5; 
+
+int speedLeft = 0;
+int speedRight = 0;
+
+unsigned long lastTime = 0;
 
 // void thread_func(){
 // }
@@ -100,8 +114,8 @@ Teensy_PWM* PWM_Instance;
 //IntervalTimer pixyTimer;
 
 // For sorting:
-// Pixy2 pixy;
-Servo sortingServo;
+Pixy2SPI_SS pixy;
+Servo seat;
 Servo redServo;
 Servo whiteServo;
 Servo blueServo;
@@ -109,6 +123,9 @@ Servo blueServo;
 //Wheels
 DGMotor leftMotor(Serial6, 1);
 DGMotor rightMotor(Serial7, 1);
+
+sensors_event_t a, g, temp;
+Adafruit_MPU6050 mpu;
 
 
 void setup() {
@@ -135,7 +152,7 @@ void setup() {
   SPI.begin();
   SPI.usingInterrupt(128);
 
-  sortingServo.attach(SORTING_SERVO_PIN);
+  seat.attach(SORTING_SERVO_PIN);
   redServo.attach(RED_SERVO_PIN);
   blueServo.attach(BLUE_SERVO_PIN);
   whiteServo.attach(WHITE_SERVO_PIN);
@@ -143,15 +160,47 @@ void setup() {
   leftMotor.begin(BAUD_RATE_1);
   rightMotor.begin(BAUD_RATE_1);
 
+  Wire.begin();
+  Wire.setClock(400000);
+
+  //if (!mpu.begin()) {
+  //  Serial.println("Failed to find MPU6050 chip");
+  //  while (1) { delay(10); }
+  //}
+  //Serial.println("MPU6050 Found!");
+
+  mpu.setGyroRange(MPU6050_RANGE_500_DEG);
+  mpu.setFilterBandwidth(MPU6050_BAND_21_HZ);
+
+  //Serial.println("Stay Still");
+  delay(1000);
+
+  leftMotor.setVelocityMode();
+  rightMotor.setVelocityMode();
+  
+  //grab 100 samples of Gz to determine the mean gyro offset
+  for(int i = 0; i < 100; i++) {
+    mpu.getEvent(&a, &g, &temp);
+    GzError += g.gyro.z;
+    delay(10);
+  }
+  GzError /= 100.0;
+  //end
+  
+  //Serial.println("Calibration Completed!");
+  lastTime = millis(); //start calculating time passed
+  
+
+
 
   //Initialize pixy camera and interrupt timer
-  //pixy.init();
-  //pixy.setLamp(255, 255);
+  pixy.init();
+  pixy.setLamp(255, 255);
   //pixyTimer.priority(128);
   //pixyTimer.begin(pixyISR, PIXY_SAMPLE_PERIOD);
 
   PWM_Instance = new Teensy_PWM(PWM_PIN, PWM_FREQ, PWM_DC);
-//  threads.addThread(thread_func, 1);
+  //  threads.addThread(thread_func, 1);
 
 }
 
@@ -170,6 +219,42 @@ void loop() {
 //  }
 //}
 
+// ---------------------------------------------
+// Driving Functions
+// ---------------------------------------------
+
+void drive() {
+  // calculate dt
+  long currentTime = millis();
+  float dt = (currentTime - lastTime) / 1000.0; //ms to s
+  lastTime = currentTime; //update
+
+  mpu.getEvent(&a, &g, &temp);
+  
+  float Gz_deg = (g.gyro.z - GzError) * RAD2DEG; //calculate Gz by accounting for offset and converting to deg/s
+
+  //integrate to get position
+  yaw += Gz_deg * dt; 
+
+  // neg yaw: ccw
+  // pos yaw: cw
+  double correction = Kp * yaw; 
+
+  double powerLeft = TpLeft - correction; 
+  double powerRight = TpRight + correction;
+
+  powerLeft = constrain(powerLeft, 0, 300);
+  powerRight = constrain(powerRight, 0, 300);
+
+  //correct
+  leftMotor.setMotorSpeed(-1 * powerLeft);
+  rightMotor.setMotorSpeed(powerRight);
+}
+
+void driveBreak() {
+  leftMotor.brake();
+  rightMotor.brake();
+}
 
 // ---------------------------------------------
 // Display Functions
@@ -198,6 +283,7 @@ void loop() {
 //  display.display();
 //}
 
+/*
 void display_vacuum_speed(float pulse) {
   float conversion_factor = 0.06;
   float conversion_intercept = 20;
@@ -217,10 +303,52 @@ void display_vacuum_speed(float pulse) {
     display.println(percentage);
     display.display();
   }
+*/
 
 // ---------------------------------------------
-// Other Functions
+// Sorting Functions
 // ---------------------------------------------
+
+void detectBalls() {
+  pixy.ccc.getBlocks();
+
+  if (pixy.ccc.numBlocks > 0) {
+    //Find area and age of block
+    uint16_t area = pixy.ccc.blocks[0].area();
+
+    // if the area of the block is above a certain threshold, read the signature
+    if (area > 4000) {
+      uint16_t signature = pixy.ccc.blocks[0].m_signature;
+      switch (signature) {
+
+        //Red ball detected
+      case 1:
+        //Serial.println("Red ball detected");
+        pixy.ccc.blocks[0].printInfo();
+        seat.write(50);
+        break;
+
+        //White ball detected
+      case 2:
+        //Serial.println("White ball detected");
+        pixy.ccc.blocks[0].printInfo();
+        seat.write(100);
+        break;
+        //Blue ball detected
+      case 3:
+        //Serial.println("Blue ball detected");
+        pixy.ccc.blocks[0].printInfo();
+        seat.write(150);
+        break;
+      default:
+
+        break;
+      }
+    }
+
+  }
+}
+
 void drop_blue(){
   blueServo.write(90);
 }
