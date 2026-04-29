@@ -10,7 +10,7 @@ void setup() {
   pinMode(input2, OUTPUT);
 
   digitalWrite(enable, HIGH);
-  digitalWrite(input1, LOW);
+  digitalWrite(input2, LOW);
 }
 
 void loop() {
@@ -21,6 +21,6 @@ void loop() {
       Serial.read();
     }
     Serial.println(sel);
-    analogWrite(input2, sel);
+    analogWrite(input1, sel);
 }
 }

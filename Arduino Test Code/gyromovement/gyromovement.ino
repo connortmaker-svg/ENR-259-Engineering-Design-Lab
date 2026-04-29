@@ -46,6 +46,9 @@ void setup() {
 
   Serial.println("Stay Still");
   delay(1000);
+
+  leftMotor.setVelocityMode();
+  rightMotor.setVelocityMode();
   
   //grab 100 samples of Gz to determine the mean gyro offset
   for(int i = 0; i < 100; i++) {
@@ -58,27 +61,34 @@ void setup() {
   
   Serial.println("Calibration Completed!");
   lastTime = millis(); //start calculating time passed
+  menu();
 }
 
+int speedLeft = 0;
+int speedRight = 0;
+
 void loop() {
+  
   if(Serial.available() > 1){
       int choice = Serial.parseInt();
       switch(choice){
-        case 1:
-          {
+        case 1: {
+          Serial.println("Left: ");
           Serial.read(); //clear buffer
           while(Serial.available() < 1 ); //wait until input
-          int speed = Serial.parseInt();
-          leftMotor.setMotorSpeed(speed);
-          }
+          speedLeft = Serial.parseInt();
+          Serial.read(); //clear buffer
+          delay(100);
+          Serial.println("Right: ");
+          while(Serial.available() < 1 ); //wait until input
+          int speedRight = Serial.parseInt();
+
+          rightMotor.setMotorSpeed(speedLeft);
+          leftMotor.setMotorSpeed(-1* speedRight);
+        }
         break;
         case 2: 
-          {
-          Serial.read(); //clear buffer
-          while(Serial.available() < 1 ); //wait until input
-          int speed = Serial.parseInt();
-          rightMotor.setMotorSpeed(speed);
-          }
+
         break;
         case 3:
           {
@@ -122,6 +132,7 @@ void loop() {
           Serial.println(buffer);
         break;
       }
+      menu();
   }
 }
 
@@ -159,12 +170,13 @@ void driveBreak() {
 }
 
 void menu() {
-  Serial.println("1.)  Change Left Motor Speed");
-  Serial.println("2.) Change Right Motor Speed");
+  Serial.println("============================");
+  Serial.println("1.)            Speed Forward");
   Serial.println("3.)                Change Kp");
   Serial.println("4.)                    Drive");
   Serial.println("5.)            Change TpLeft");
   Serial.println("6.)           Change TpRight");
   Serial.println("7.)                    Break");
   Serial.println("8.)               Print Data");
+  Serial.println("============================");
 }
