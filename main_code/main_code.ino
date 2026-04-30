@@ -23,9 +23,10 @@
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
 
-//for gyro
+//for gyro and sensor
 #include <Adafruit_MPU6050.h>
 #include <Adafruit_Sensor.h>
+#include "Adafruit_VL53L0X.h"
 
 //for wheels
 #include "DGMotor.h"
@@ -65,6 +66,11 @@
 #define WHITE_SERVO_PIN 5
 #define BLUE_SERVO_PIN 6
 
+//GPIO pins for distance interrupts
+#define VL53LOX_INT_PIN 26  //interrupt pin
+#define VL53LOX_SHUT_PIN 27 //shutdown pin
+#define LOW_THREASHOLD 50
+#define HIGH_THREASHOLD 100
 
 // for debug display and vacuum
 #define BAUD_RATE_0 9600
@@ -84,6 +90,7 @@
 // ---------------------------------------------
 
 //volatile uint16_t signature;
+volatile uint8_t VL53LOX_State = LOW;
 
 //Variables for gyro PID 
 float GzError = 0; // z calib offset
@@ -124,9 +131,12 @@ Servo blueServo;
 DGMotor leftMotor(Serial6, 1);
 DGMotor rightMotor(Serial7, 1);
 
+//Gyro
 sensors_event_t a, g, temp;
 Adafruit_MPU6050 mpu;
 
+//Distance Sensor (I2C address: 0x29)
+Adafruit_VL53L0X lox = Adafruit_VL53L0X();
 
 void setup() {
   // put your setup code here, to run once:
@@ -163,11 +173,11 @@ void setup() {
   Wire.begin();
   Wire.setClock(400000);
 
-  //if (!mpu.begin()) {
-  //  Serial.println("Failed to find MPU6050 chip");
-  //  while (1) { delay(10); }
-  //}
-  //Serial.println("MPU6050 Found!");
+  if (!mpu.begin()) {
+    Serial.println("Failed to find MPU6050 chip");
+    while (1) { delay(10); }
+  }
+  Serial.println("MPU6050 Found!");
 
   mpu.setGyroRange(MPU6050_RANGE_500_DEG);
   mpu.setFilterBandwidth(MPU6050_BAND_21_HZ);
@@ -190,8 +200,33 @@ void setup() {
   //Serial.println("Calibration Completed!");
   lastTime = millis(); //start calculating time passed
   
+  pinMode(VL53LOX_SHUT_PIN, INPUT_PULLUP);
+  pinMode(VL53LOX_INT_PIN, INPUT_PULLUP);
+  attachInterrupt(digitalPinToInterrupt(VL53LOX_INT_PIN), VL53LOXISR, CHANGE);
 
+  // if lox.begin failes its becasue it was a warm boot and the VL53LOX is in
+  // continues mesurement mode we can use an IO pin to reset the device in case
+  // we get stuck in this mode
+  while (!lox.begin()) {
+    Serial.println(F("Failed to boot VL53L0X"));
+    Serial.println("Adafruit VL53L0X XShut set Low to Force HW Reset");
+    digitalWrite(VL53LOX_SHUT_PIN, LOW);
+    delay(100);
+    digitalWrite(VL53LOX_SHUT_PIN, HIGH);
+    Serial.println("Adafruit VL53L0X XShut set high to Allow Boot");
+    delay(100);
+  }
+  //Set GPIO config to trigger when range is lower then LowThreshold
+  lox.setGpioConfig(VL53L0X_DEVICEMODE_CONTINUOUS_RANGING,
+                    VL53L0X_GPIOFUNCTIONALITY_THRESHOLD_CROSSED_LOW,
+                    VL53L0X_INTERRUPTPOLARITY_LOW);
 
+  //Quantize threasholds
+  FixPoint1616_t LowThreashHold = (LOW_THREASHOLD * 65536.0);
+  FixPoint1616_t HighThreashHold = (HIGH_THREASHOLD * 65536.0);
+  Serial.println("Set Interrupt Threasholds... ");
+  lox.setInterruptThresholds(LowThreashHold, HighThreashHold, true);
+  lox.setDeviceMode(VL53L0X_DEVICEMODE_CONTINUOUS_RANGING, false);
 
   //Initialize pixy camera and interrupt timer
   pixy.init();
@@ -218,6 +253,11 @@ void loop() {
 //    signature = pixy.ccc.blocks[0].m_signature;
 //  }
 //}
+
+void VL53LOXISR() {
+  // Read if we are high or low (low = in range)
+  VL53LOX_State = digitalRead(VL53LOX_INT_PIN);
+}
 
 // ---------------------------------------------
 // Driving Functions
@@ -254,6 +294,27 @@ void drive() {
 void driveBreak() {
   leftMotor.brake();
   rightMotor.brake();
+}
+
+void timedDrive(unsigned long stopTime) {
+  unsigned long startDriveTime = millis();
+  lastTime = millis();
+
+  while(millis() - startDriveTime <= stopTime) {
+    drive();
+  }
+  driveBreak(); 
+  
+}
+
+void sensorDrive(){
+  
+  while(VL530LOX_STATE == HIGH) {
+    drive();
+  }
+  //Clear interrupt
+  driveBreak();
+  lox.clearInterruptMask(false);
 }
 
 // ---------------------------------------------
