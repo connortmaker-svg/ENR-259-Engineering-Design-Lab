@@ -1,6 +1,5 @@
 // note - want to integrate threading to see if that helps with teensy control of wheels
 
-
 #include "DGMotor.h"
 
 #include "HardwareSerial.h"
@@ -12,6 +11,8 @@
 #include <Adafruit_Sensor.h>
 
 #include <Wire.h>
+
+#include "TeensyThreads.h"
 
 #define RAD2DEG (180.0 / PI)
 

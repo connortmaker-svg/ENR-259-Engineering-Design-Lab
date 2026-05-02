@@ -1,27 +1,30 @@
 #include <Servo.h>
 
-Servo myservo;  // create servo object to control a servo
-
-int pos = 0;    // variable to store the servo position
+Servo ms1;  
+Servo ms2;
+Servo ms3;
 
 void setup() {
-  myservo.attach(9);  // attaches the servo on pin 9 to the servo object
+  ms1.attach(37); 
+  ms2.attach(36);  
+  ms3.attach(33);  
+
 }
 
 void loop() {
-  for (pos = 0; pos <= 180; pos += 1) { // goes from 0 degrees to 180 degrees
-    // in steps of 1 degree
-    myservo.write(pos);              // tell servo to go to position in variable 'pos'
-    delay(15);                       // waits 15ms for the servo to reach the position
-  }
-  Serial.println("180 done");
-  for (pos = 180; pos >= 0; pos -= 1) { // goes from 180 degrees to 0 degrees
-    myservo.write(pos);              // tell servo to go to position in variable 'pos'
-    delay(15);                       // waits 15ms for the servo to reach the position
-  }
-  Serial.println("180 done");
+    ms1.write(90);              
+    delay(15);   
+    ms2.write(90);
+    delay(15); 
+    ms3.write(90);
 
-  while(Serial.avalible()){
-    Serial.write();
-  }
+    delay(3000);  
+
+    ms1.write(180);              
+    delay(15);   
+    ms2.write(180);
+    delay(15); 
+    ms3.write(180);   
+
+    delay(3000);               
 }

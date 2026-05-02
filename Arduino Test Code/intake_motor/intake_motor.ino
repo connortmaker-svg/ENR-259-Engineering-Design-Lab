@@ -11,6 +11,8 @@ void setup() {
 
   digitalWrite(enable, HIGH);
   digitalWrite(input2, LOW);
+  Serial.println("Meow");
+  
 }
 
 void loop() {

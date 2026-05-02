@@ -37,6 +37,7 @@ private:
 
   // Internal methods
   void calculateAndSend(uint8_t* packet);
+  void flushInputBuffer();
 };
 
 #endif // DGMotor_h

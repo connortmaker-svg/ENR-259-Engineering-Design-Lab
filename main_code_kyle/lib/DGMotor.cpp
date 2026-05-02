@@ -1,15 +1,14 @@
 
-
 #include "DGMotor.h"
 
 DGMotor::DGMotor(HardwareSerial& serial, uint8_t motorID)
-  : _serial(serial), _motorID(motorID) {} 
+  : _serial(serial), _motorID(motorID) {}
 
 void DGMotor::begin(unsigned long baud) {
-  _serial.begin(baud); //start 
+  _serial.begin(baud);
 }
 
-// send the specific ID-setting packet 6 times for ID change
+// Sends the specific ID-setting packet 6 times as shown in the reference
 void DGMotor::setMotorID(uint8_t newID) {
   uint8_t packet[10] = {
     0xAA,
@@ -23,7 +22,7 @@ void DGMotor::setMotorID(uint8_t newID) {
     _serial.write(packet, 10);
   }
 
-  _motorID = newID; // 
+  _motorID = newID; // Local state update
 }
 
 void DGMotor::setVelocityMode() {
@@ -47,7 +46,7 @@ void DGMotor::setPositionMode() {
 }
 
 void DGMotor::setMotorSpeed(int16_t rpm) {
-  // speed val is RPM * 10
+  // Speed value is RPM * 10
   int16_t speedValue = rpm * 10;
   uint8_t packet[10] = {
     _motorID,
@@ -57,13 +56,10 @@ void DGMotor::setMotorSpeed(int16_t rpm) {
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00
   };
   calculateAndSend(packet);
-  
-  
-  
 }
 
 void DGMotor::setMotorDegrees(int16_t deg) {
-  // map 0-360 degrees to 16-bit integer (0-32767) 
+  // Map 0-360 degrees to 16-bit integer (0-32767) as in reference
   float degVal_float = (float)32767 / (float)360 * (float)deg;
   uint16_t degVal_int = (uint16_t)ceil(degVal_float);
 
@@ -75,7 +71,6 @@ void DGMotor::setMotorDegrees(int16_t deg) {
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00
   };
   calculateAndSend(packet);
-  Serial.println("Running Motor: "); 
 }
 
 void DGMotor::requestMotorStatus() {
@@ -96,6 +91,7 @@ void DGMotor::requestMotorMode() {
   calculateAndSend(packet);
 }
 
+// Immediate stop using the hardcoded 0x50 CRC packet 
 void DGMotor::brake() {
   uint8_t packet[10] = {
     _motorID,
@@ -105,6 +101,7 @@ void DGMotor::brake() {
   _serial.write(packet, 10);
 }
 
+// CRC8 calculation and transmission
 void DGMotor::calculateAndSend(uint8_t* packet) {
   uint8_t crc = 0x00;
   // CRC-8 (Maxim) polynomial: x^8 + x^5 + x^4 + 1 (0x8C representation for reflected)
@@ -122,3 +119,9 @@ void DGMotor::calculateAndSend(uint8_t* packet) {
   _serial.write(packet, 10);
 }
 
+// Clears incoming buffer
+void DGMotor::flushInputBuffer() {
+  while (_serial.available()) {
+    _serial.read();
+  }
+}
