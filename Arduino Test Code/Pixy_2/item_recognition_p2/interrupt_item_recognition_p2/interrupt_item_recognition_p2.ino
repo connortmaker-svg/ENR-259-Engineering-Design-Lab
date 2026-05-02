@@ -24,6 +24,7 @@ void setup()
   pinMode(8, OUTPUT);
   SPI.begin();
   SPI.usingInterrupt(128);
+  SPI.beginTransaction(SPISettings(PIXY_SPI_CLOCKRATE, MSBFIRST, SPI_MODE3));
 
   myservo.attach(9);
 

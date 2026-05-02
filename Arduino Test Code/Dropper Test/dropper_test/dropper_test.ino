@@ -10,13 +10,13 @@ void setup() {
   Serial.print("Starting...\n");
 
   redServo.attach(4);
-  redServo.write(180);
+  redServo.write(0);
 
   blueServo.attach(5);
-  blueServo.write(180);
+  blueServo.write(0);
 
   whiteServo.attach(6);
-  whiteServo.write(180);
+  whiteServo.write(0);
 
 }
 
@@ -30,7 +30,7 @@ void loop() {
   whiteServo.write(90);
   delay(2000);
   Serial.print("All balls dropped\n");
-  redServo.write(180);
-  blueServo.write(180);
-  whiteServo.write(180);
+  redServo.write(0);
+  blueServo.write(0);
+  whiteServo.write(0);
 }
